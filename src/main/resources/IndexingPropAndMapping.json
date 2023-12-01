@@ -1,0 +1,101 @@
+{
+  "mappings": {
+    "properties": {
+      "plan": {
+        "properties": {
+          "_org": {
+            "type": "text"
+          },
+          "objectId": {
+            "type": "keyword"
+          },
+          "objectType": {
+            "type": "text"
+          },
+          "planType": {
+            "type": "text"
+          },
+          "creationDate": {
+            "type": "date",
+            "format": "MM-dd-yyyy"
+          }
+        }
+      },
+      "planCostShares": {
+        "properties": {
+          "deductible": {
+            "type": "integer"
+          },
+          "_org": {
+            "type": "text"
+          },
+          "copay": {
+            "type": "integer"
+          },
+          "objectId": {
+            "type": "keyword"
+          },
+          "objectType": {
+            "type": "text"
+          }
+        }
+      },
+      "linkedPlanServices": {
+        "properties": {
+          "_org": {
+            "type": "text"
+          },
+          "objectId": {
+            "type": "keyword"
+          },
+          "objectType": {
+            "type": "text"
+          }
+        }
+      },
+      "linkedService": {
+        "properties": {
+          "_org": {
+            "type": "text"
+          },
+          "objectId": {
+            "type": "keyword"
+          },
+          "objectType": {
+            "type": "text"
+          },
+          "name": {
+            "type": "text"
+          }
+        }
+      },
+      "planserviceCostShares": {
+        "properties": {
+          "deductible": {
+            "type": "integer"
+          },
+          "_org": {
+            "type": "text"
+          },
+          "copay": {
+            "type": "integer"
+          },
+          "objectId": {
+            "type": "keyword"
+          },
+          "objectType": {
+            "type": "text"
+          }
+        }
+      },
+      "plan_relations": {
+        "type": "join",
+        "eager_global_ordinals": true,
+        "relations": {
+          "plan": ["planCostShares", "linkedPlanServices"],
+          "linkedPlanServices": ["linkedService", "planserviceCostShares"]
+        }
+      }
+    }
+  }
+}
