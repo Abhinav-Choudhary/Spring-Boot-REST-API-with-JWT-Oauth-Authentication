@@ -105,7 +105,7 @@ public class PlanController {
 
         }
 
-        String key = json.get("objectType").toString() + ":" + json.get("objectId").toString();
+        String key = json.get("objectType").toString() + ":" + json.get("objectId").toString() + ":";
         if(planService.checkIfKeyExists(key)){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new JSONObject().put("Message", "Plan already exist.").toString());
         }
@@ -126,21 +126,21 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
         
-        if (!planService.checkIfKeyExists(type + ":" + objectId)) {
+        if (!planService.checkIfKeyExists(type + ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("Message", "ObjectId does not exist").toString());
         }
 
         String actualEtag = null;
         if (type.equals("plan")) {
-            actualEtag = planService.getEtag(type + ":" + objectId, "eTag");
+            actualEtag = planService.getEtag(type + ":" + objectId + ":", "eTag");
             String eTag = headers.getFirst("If-None-Match");
             if (eTag != null && eTag.equals(actualEtag)) {
                 return ResponseEntity.status(HttpStatus.NOT_MODIFIED).eTag(actualEtag).body(new JSONObject().put("Message", "Not Modified").toString());
             }
         }
 
-        String key = type + ":" + objectId;
+        String key = type + ":" + objectId + ":";
         Map<String, Object> plan = planService.getPlan(key);
 
         if (type.equals("plan")) {
@@ -157,11 +157,11 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
         
-        if (!planService.checkIfKeyExists("plan"+ ":" + objectId)) {
+        if (!planService.checkIfKeyExists("plan"+ ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("Message", "ObjectId does not exist").toString());
         }
-        String key = "plan:" + objectId;
+        String key = "plan:" + objectId + ":";
         // String actualEtag = planService.getEtag(key, "eTag");
         // String eTag = headers.getFirst("If-Match");
         // if (eTag != null && !eTag.equals(actualEtag)) {
@@ -172,7 +172,7 @@ public class PlanController {
         Map<String, Object> plan = planService.getPlan(key);
         template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("DELETE", new JSONObject(plan).toString()));
         
-        planService.deletePlan("plan" + ":" + objectId);
+        planService.deletePlan("plan" + ":" + objectId + ":");
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
@@ -197,7 +197,7 @@ public class PlanController {
                     .body(new JSONObject().put("Validation Error", ex.getMessage()).toString());
         }
 
-        String key = "plan:" + objectId;
+        String key = "plan:" + objectId + ":";
         if (!planService.checkIfKeyExists(key)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("Message", "ObjectId does not exist").toString());
@@ -220,8 +220,10 @@ public class PlanController {
 
         template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
 
-        return ResponseEntity.ok().eTag(newEtag)
-                .body(new JSONObject().put("Message: ", "Resource updated successfully").toString());
+        return ResponseEntity.ok().eTag(newEtag).body(" {\"message\": \"Created data with key: " + planObject.get("objectId") + "\" }");
+
+        // return ResponseEntity.ok().eTag(newEtag)
+        //         .body(new JSONObject().put("Message: ", "Resource updated successfully").toString());
     }
 
     @PatchMapping(path = "/plan/{objectId}", produces = "application/json")
@@ -234,7 +236,7 @@ public class PlanController {
 
         JSONObject planObject = new JSONObject(medicalPlan);
 
-        String key = "plan:" + objectId;
+        String key = "plan:" + objectId + ":";
         if (!planService.checkIfKeyExists(key)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("Message", "ObjectId does not exist").toString());

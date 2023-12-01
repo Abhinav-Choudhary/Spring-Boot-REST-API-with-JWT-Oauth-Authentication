@@ -59,9 +59,7 @@ public class PlanService {
 
         Iterator<String> iterator = object.keySet().iterator();
         while (iterator.hasNext()) {
-            // System.out.println("Object 1 "+object);
-            // System.out.println("Object 2 "+object.get("objectType") );
-            String redisKey = object.get("objectType") + ":" + object.get("objectId");
+            String redisKey = object.get("objectType") + ":" + object.get("objectId") + ":";
             String key = iterator.next();
             Object value = object.get(key);
             if (value instanceof JSONObject) {
@@ -73,7 +71,6 @@ public class PlanService {
                 for (HashMap<String, HashMap<String, Object>> entry : (List<HashMap<String, HashMap<String, Object>>>) value) {
                     for (String listKey : entry.keySet()) {
                         planDao.addSetValue(redisKey + ":" + key, listKey);
-                        // System.out.println(redisKey + ":" + key + " : " + listKey);
                     }
                 }
             } else {
@@ -83,7 +80,6 @@ public class PlanService {
             }
 
         }
-        // System.out.println("MAP: " + map.toString());
         return map;
     }
 
@@ -119,7 +115,6 @@ public class PlanService {
 
             } else {
                 String newStr = key.substring((redisKey + ":").length());
-                // System.out.println("Key to be searched :" +key+"--------------"+newStr);
                 Set<String> members = planDao.sMembers(key);
                 if (members.size() > 1) {
                     List<Object> listObj = new ArrayList<Object>();
@@ -168,8 +163,6 @@ public class PlanService {
     public String savePlanToRedis(JSONObject planObject, String key) {
         Map<String, Object> savedPlanMap = savePlan(key, planObject);
         String savedPlan = new JSONObject(savedPlanMap).toString();
-
-        // messageQueueService.addToMessageQueue(savedPlan, false);
 
         String newEtag = DigestUtils.md5Hex(savedPlan);
         hashSet(key, "eTag", newEtag);
