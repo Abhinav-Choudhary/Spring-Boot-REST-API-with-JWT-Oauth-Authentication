@@ -13,13 +13,9 @@ import org.springframework.stereotype.Service;
 public class JSONValidator {
     
     public void validateJson(JSONObject object) throws IOException {
-        // try(){
             InputStream inputStream = getClass().getResourceAsStream("/JsonSchema.json");
             JSONObject rawSchema = new JSONObject(new JSONTokener(inputStream));
             Schema schema = SchemaLoader.load(rawSchema);
             schema.validate(object);
-        // } catch(Exception e) {
-        //     e.printStackTrace();
-        // }
     }
 }

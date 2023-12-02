@@ -88,7 +88,7 @@
           }
         }
       },
-      "plan_relations": {
+      "plan_joins": {
         "type": "join",
         "eager_global_ordinals": true,
         "relations": {

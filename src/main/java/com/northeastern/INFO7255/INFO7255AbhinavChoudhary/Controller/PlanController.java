@@ -86,10 +86,10 @@ public class PlanController {
     @PostMapping(path = "/plan/", produces = "application/json")
     public ResponseEntity<Object> createPlan(@RequestBody(required = false) String medicalPlan, @RequestHeader HttpHeaders headers) throws JSONException, Exception {
         
-        // String validateToken = validateToken(headers);
-        // if(!validateToken.equals("tokenValid")) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", validateToken).toString());
-        // }
+        String validateToken = validateToken(headers);
+        if(!validateToken.equals("tokenValid")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", validateToken).toString());
+        }
         
         map.clear();
 
@@ -122,9 +122,9 @@ public class PlanController {
     @GetMapping(path = "/{type}/{objectId}", produces = "application/json")
     public ResponseEntity<Object> getPlan(@RequestHeader HttpHeaders headers, @PathVariable String objectId,@PathVariable String type) throws JSONException, Exception {
 
-        // String validateToken = validateToken(headers);
-        // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        // .body(new JSONObject().put("Authentication Error", validateToken).toString());
+        String validateToken = validateToken(headers);
+        if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(new JSONObject().put("Authentication Error", validateToken).toString());
         
         if (!planService.checkIfKeyExists(type + ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -153,21 +153,21 @@ public class PlanController {
     @DeleteMapping(path = "/plan/{objectId}", produces = "application/json")
     public ResponseEntity<Object> getPlan(@RequestHeader HttpHeaders headers, @PathVariable String objectId){
 
-        // String validateToken = validateToken(headers);
-        // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        // .body(new JSONObject().put("Authentication Error", validateToken).toString());
+        String validateToken = validateToken(headers);
+        if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(new JSONObject().put("Authentication Error", validateToken).toString());
         
         if (!planService.checkIfKeyExists("plan"+ ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("Message", "ObjectId does not exist").toString());
         }
         String key = "plan:" + objectId + ":";
-        // String actualEtag = planService.getEtag(key, "eTag");
-        // String eTag = headers.getFirst("If-Match");
-        // if (eTag != null && !eTag.equals(actualEtag)) {
-        //     return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
-        // }
-        // if(eTag == null) return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
+        String actualEtag = planService.getEtag(key, "eTag");
+        String eTag = headers.getFirst("If-Match");
+        if (eTag != null && !eTag.equals(actualEtag)) {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
+        }
+        if(eTag == null) return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
 
         Map<String, Object> plan = planService.getPlan(key);
         template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("DELETE", new JSONObject(plan).toString()));
@@ -185,9 +185,9 @@ public class PlanController {
     public ResponseEntity<Object> updatePlan(@RequestHeader HttpHeaders headers, @Valid @RequestBody String medicalPlan,
                                              @PathVariable String objectId) throws IOException {
 
-        // String validateToken = validateToken(headers);
-        // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        // .body(new JSONObject().put("Authentication Error", validateToken).toString());
+        String validateToken = validateToken(headers);
+        if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
         JSONObject planObject = new JSONObject(medicalPlan);
         try {
@@ -204,11 +204,11 @@ public class PlanController {
         }
 
         // Get eTag value
-        // String actualEtag = planService.getEtag(key, "eTag");
-        // String eTag = headers.getFirst("If-Match");
-        // if (eTag != null && !eTag.equals(actualEtag)) {
-        //     return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
-        // }
+        String actualEtag = planService.getEtag(key, "eTag");
+        String eTag = headers.getFirst("If-Match");
+        if (eTag != null && !eTag.equals(actualEtag)) {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
+        }
 
         Map<String, Object> oldPlan = planService.getPlan(key);
 
@@ -230,9 +230,9 @@ public class PlanController {
     public ResponseEntity<Object> patchPlan(@RequestHeader HttpHeaders headers, @Valid @RequestBody String medicalPlan,
                                             @PathVariable String objectId) throws IOException {
 
-        // String validateToken = validateToken(headers);
-        // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        // .body(new JSONObject().put("Authentication Error", validateToken).toString());
+        String validateToken = validateToken(headers);
+        if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
         JSONObject planObject = new JSONObject(medicalPlan);
 
@@ -249,12 +249,12 @@ public class PlanController {
 
         }
 
-        // String actualEtag = planService.getEtag(key, "eTag");
-        // String eTag = headers.getFirst("If-Match");
-        // if (eTag != null && !eTag.equals(actualEtag)) {
-        //     return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
-        // }
-        // if(eTag == null) return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
+        String actualEtag = planService.getEtag(key, "eTag");
+        String eTag = headers.getFirst("If-Match");
+        if (eTag != null && !eTag.equals(actualEtag)) {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
+        }
+        if(eTag == null) return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
 
         template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
         

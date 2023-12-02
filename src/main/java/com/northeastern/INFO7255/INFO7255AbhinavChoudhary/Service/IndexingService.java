@@ -1,7 +1,5 @@
 package com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service;
 
-//H
-
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.DeleteRequest;
 import co.elastic.clients.elasticsearch.core.DeleteResponse;
@@ -118,11 +116,11 @@ public class IndexingService {
         }
         Map<String, Object> temp = new HashMap<>();
         if(objectName.equals("plan")) {
-            childMap.put("plan_relations", objectName);
+            childMap.put("plan_joins", objectName);
         } else {
             temp.put("name", objectName);
             temp.put("parent", parentId);
-            childMap.put("plan_relations", temp);
+            childMap.put("plan_joins", temp);
         }
         String id = parentId + ":" + jsonObject.get("objectId").toString();
         documentMap.put(id, childMap);
