@@ -1,2 +1,16 @@
-# RestFul-App
-App created in Spring boot for handle Rest API calls. Contains JWT token for authentication and ElasticSearch and RabbitMQ for search and querying. Part of INFO7255 Advance Big Data Indexing course offered at Northeastern University taken in Fall 2023.
+# Spring Boot REST API with JWT Authentication
+This project, developed for Northeastern University's INFO7255 Advanced Big Data Indexing course, explores the intricacies of building secure and scalable REST APIs using Spring Boot. The focus lies on designing and implementing a comprehensive suite of endpoints adhering to industry best practices for:
+
+- Resource Representation: Defined clear representations of data accessible through the API.
+- URL Mapping: Mapped resource URLs to corresponding actions (GET, POST, PUT, DELETE).
+- CRUD Operations: Employed appropriate HTTP methods for Create, Read, Update, and Delete functionalities.
+- JWT Authentication: Integrated secure token-based authentication for authorized access control.
+- Data Validation and Error Handling: Implemented robust validation checks and informative error responses.
+## Additional Features:
+- Utilizes Elasticsearch for enhanced search capabilities.
+- Leverages RabbitMQ for asynchronous messaging.
+
+## Key Takeaways:
+- Hands-on experience designing and building RESTful APIs.
+- Proficient understanding of JWT authentication and authorization.
+- Familiarity with Spring Boot's framework features for efficient development.
