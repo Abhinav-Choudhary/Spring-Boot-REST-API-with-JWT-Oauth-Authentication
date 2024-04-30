@@ -28,14 +28,16 @@ import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.PlanService;
 import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Validator.JSONValidator;
 import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.configuration.MessagingConfig;
 import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.util.JwtUtils;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+// import java.security.KeyPair;
+// import java.security.KeyPairGenerator;
+// import java.security.NoSuchAlgorithmException;
+// import java.security.spec.InvalidKeySpecException;
+// import java.util.logging.Level;
+// import java.util.logging.Logger;
 import javax.validation.Valid;
-import org.apache.commons.codec.binary.Base64;
+// import org.apache.commons.codec.binary.Base64;
+
+import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.AuthService;
 
 @RestController
 public class PlanController {
@@ -54,41 +56,50 @@ public class PlanController {
     @Autowired
     RabbitTemplate template;
 
+    @Autowired
+    AuthService auth;
+
     Map<String, Object> map = new HashMap<String, Object>();
     String publicKey = "";
     String privateKey = "";
     
-     @GetMapping("/token")
-     public ResponseEntity<Object> generateToken() {
-         Map<String, Object> claims = new HashMap<>();
-        try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-            kpg.initialize(2048);
-            KeyPair kp = kpg.generateKeyPair();
+    //  @GetMapping("/token")
+    //  public ResponseEntity<Object> generateToken() {
+    //      Map<String, Object> claims = new HashMap<>();
+    //     try {
+    //         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+    //         kpg.initialize(2048);
+    //         KeyPair kp = kpg.generateKeyPair();
             
-            publicKey = Base64.encodeBase64String(kp.getPublic().getEncoded());
-            privateKey = Base64.encodeBase64String(kp.getPrivate().getEncoded());
+    //         publicKey = Base64.encodeBase64String(kp.getPublic().getEncoded());
+    //         privateKey = Base64.encodeBase64String(kp.getPrivate().getEncoded());
             
-            String jwtToken = jwtUtils.generateAccessToken(claims, privateKey);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new JSONObject().put("JWTToken", jwtToken).toString());
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            Logger.getLogger(PlanController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    //         String jwtToken = jwtUtils.generateAccessToken(claims, privateKey);
+    //         return ResponseEntity.status(HttpStatus.CREATED).body(new JSONObject().put("JWTToken", jwtToken).toString());
+    //     } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+    //         Logger.getLogger(PlanController.class.getName()).log(Level.SEVERE, null, ex);
+    //     }
         
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new JSONObject().put("JWTToken", "Error creating JWT Token").toString());
-     }
+    //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new JSONObject().put("JWTToken", "Error creating JWT Token").toString());
+    //  }
 
-     public String validateToken(@RequestHeader HttpHeaders headers) {
-        String jwtToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        return jwtUtils.validateJwtToken(jwtToken,publicKey);
-     }
+    //  public String validateToken(@RequestHeader HttpHeaders headers) {
+    //     String jwtToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+    //     return jwtUtils.validateJwtToken(jwtToken,publicKey);
+    //  }
 
     @PostMapping(path = "/plan/", produces = "application/json")
     public ResponseEntity<Object> createPlan(@RequestBody(required = false) String medicalPlan, @RequestHeader HttpHeaders headers) throws JSONException, Exception {
         
-        String validateToken = validateToken(headers);
-        if(!validateToken.equals("tokenValid")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", validateToken).toString());
+        // String validateToken = validateToken(headers);
+        // if(!validateToken.equals("tokenValid")) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", validateToken).toString());
+        // }
+
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        System.out.println("Token:"+authToken);
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
         }
         
         map.clear();
@@ -122,9 +133,14 @@ public class PlanController {
     @GetMapping(path = "/{type}/{objectId}", produces = "application/json")
     public ResponseEntity<Object> getPlan(@RequestHeader HttpHeaders headers, @PathVariable String objectId,@PathVariable String type) throws JSONException, Exception {
 
-        String validateToken = validateToken(headers);
-        if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(new JSONObject().put("Authentication Error", validateToken).toString());
+        // String validateToken = validateToken(headers);
+        // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        // .body(new JSONObject().put("Authentication Error", validateToken).toString());
+
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
         
         if (!planService.checkIfKeyExists(type + ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -153,9 +169,14 @@ public class PlanController {
     @DeleteMapping(path = "/plan/{objectId}", produces = "application/json")
     public ResponseEntity<Object> getPlan(@RequestHeader HttpHeaders headers, @PathVariable String objectId){
 
-        String validateToken = validateToken(headers);
-        if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(new JSONObject().put("Authentication Error", validateToken).toString());
+        // String validateToken = validateToken(headers);
+        // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        // .body(new JSONObject().put("Authentication Error", validateToken).toString());
+
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
         
         if (!planService.checkIfKeyExists("plan"+ ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -185,9 +206,14 @@ public class PlanController {
     public ResponseEntity<Object> updatePlan(@RequestHeader HttpHeaders headers, @Valid @RequestBody String medicalPlan,
                                              @PathVariable String objectId) throws IOException {
 
-        String validateToken = validateToken(headers);
-        if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(new JSONObject().put("Authentication Error", validateToken).toString());
+        // String validateToken = validateToken(headers);
+        // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        // .body(new JSONObject().put("Authentication Error", validateToken).toString());
+
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
 
         JSONObject planObject = new JSONObject(medicalPlan);
         try {
@@ -230,9 +256,14 @@ public class PlanController {
     public ResponseEntity<Object> patchPlan(@RequestHeader HttpHeaders headers, @Valid @RequestBody String medicalPlan,
                                             @PathVariable String objectId) throws IOException {
 
-        String validateToken = validateToken(headers);
-        if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(new JSONObject().put("Authentication Error", validateToken).toString());
+        // String validateToken = validateToken(headers);
+        // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        // .body(new JSONObject().put("Authentication Error", validateToken).toString());
+
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
 
         JSONObject planObject = new JSONObject(medicalPlan);
 
