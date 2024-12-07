@@ -40,6 +40,7 @@ import javax.validation.Valid;
 import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.AuthService;
 
 @RestController
+@RequestMapping("/v1")
 public class PlanController {
     @Autowired
     JSONValidator jsonValidator;
