@@ -1,13 +1,13 @@
 package com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Controller;
 
 import java.io.IOException;
-import java.util.HashMap;
+// import java.util.HashMap;
 import java.util.Map;
 
 import org.everit.json.schema.ValidationException;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+// import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.IndexingMessage;
-import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.IndexingService;
+// import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.IndexingMessage;
+// import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.IndexingService;
 import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.PlanService;
 import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Validator.JSONValidator;
-import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.configuration.MessagingConfig;
-import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.util.JwtUtils;
+// import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.configuration.MessagingConfig;
+// import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.util.JwtUtils;
 // import java.security.KeyPair;
 // import java.security.KeyPairGenerator;
 // import java.security.NoSuchAlgorithmException;
@@ -38,7 +38,7 @@ import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.util.JwtUtils;
 import javax.validation.Valid;
 // import org.apache.commons.codec.binary.Base64;
 
-import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.AuthService;
+// import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.AuthService;
 
 @RestController
 @RequestMapping("/v1")
@@ -49,21 +49,21 @@ public class PlanController {
     @Autowired
     PlanService planService;
     
-    @Autowired
-    JwtUtils jwtUtils;
+    // @Autowired
+    // JwtUtils jwtUtils;
 
-    @Autowired
-    IndexingService indexingService;
+    // @Autowired
+    // IndexingService indexingService;
 
-    @Autowired
-    RabbitTemplate template;
+    // @Autowired
+    // RabbitTemplate template;
 
-    @Autowired
-    AuthService auth;
+    // @Autowired
+    // AuthService auth;
 
-    Map<String, Object> map = new HashMap<String, Object>();
-    String publicKey = "";
-    String privateKey = "";
+    // Map<String, Object> map = new HashMap<String, Object>();
+    // String publicKey = "";
+    // String privateKey = "";
     
     //  @GetMapping("/token")
     //  public ResponseEntity<Object> generateToken() {
@@ -98,13 +98,13 @@ public class PlanController {
         //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", validateToken).toString());
         // }
 
-        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        System.out.println("Token:"+authToken);
-        if(!auth.verify(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        }
+        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        // System.out.println("Token:"+authToken);
+        // if(!auth.verify(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        // }
         
-        map.clear();
+        // map.clear();
 
         if(medicalPlan == null || medicalPlan.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new JSONObject().put("Error", " The request body is empty. Please provide a valid JSON payload in the request body.").toString());
@@ -125,9 +125,9 @@ public class PlanController {
 
         String newEtag = planService.savePlanToRedis(json, key);
 
-        indexingService.receiveMessage(new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
+        // indexingService.receiveMessage(new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
 
-        template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
+        // template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
 
         return ResponseEntity.ok().eTag(newEtag).body(" {\"message\": \"Created data with key: " + json.get("objectId") + "\" }");
     }
@@ -139,10 +139,10 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
-        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        if(!auth.verify(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        }
+        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        // if(!auth.verify(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        // }
         
         if (!planService.checkIfKeyExists(type + ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -175,10 +175,10 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
-        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        if(!auth.verify(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        }
+        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        // if(!auth.verify(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        // }
         
         if (!planService.checkIfKeyExists("plan"+ ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -192,8 +192,8 @@ public class PlanController {
         }
         if(eTag == null) return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
 
-        Map<String, Object> plan = planService.getPlan(key);
-        template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("DELETE", new JSONObject(plan).toString()));
+        // Map<String, Object> plan = planService.getPlan(key);
+        // template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("DELETE", new JSONObject(plan).toString()));
         
         planService.deletePlan("plan" + ":" + objectId + ":");
 
@@ -212,10 +212,10 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
-        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        if(!auth.verify(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        }
+        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        // if(!auth.verify(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        // }
 
         JSONObject planObject = new JSONObject(medicalPlan);
         try {
@@ -238,15 +238,15 @@ public class PlanController {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
         }
 
-        Map<String, Object> oldPlan = planService.getPlan(key);
+        // Map<String, Object> oldPlan = planService.getPlan(key);
 
-        template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("DELETE", new JSONObject(oldPlan).toString()));
+        // template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("DELETE", new JSONObject(oldPlan).toString()));
         
-        planService.deletePlan(key);
+        // planService.deletePlan(key);
 
         String newEtag = planService.savePlanToRedis(planObject, key);
 
-        template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
+        // template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
 
         return ResponseEntity.ok().eTag(newEtag).body(" {\"message\": \"Created data with key: " + planObject.get("objectId") + "\" }");
 
@@ -262,10 +262,10 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
-        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        if(!auth.verify(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        }
+        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        // if(!auth.verify(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        // }
 
         JSONObject planObject = new JSONObject(medicalPlan);
 
@@ -289,7 +289,7 @@ public class PlanController {
         }
         if(eTag == null) return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).eTag(actualEtag).body(new JSONObject().put("Message", "Precondition Failed").toString());
 
-        template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
+        // template.convertAndSend(MessagingConfig.MESSAGE_EXCHANGE_NAME, MessagingConfig.ROUTING_KEY, new IndexingMessage("CREATE", new JSONObject(medicalPlan).toString()));
         
         String newEtag = planService.savePlanToRedis(planObject, key);
 

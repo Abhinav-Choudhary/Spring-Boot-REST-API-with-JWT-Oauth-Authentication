@@ -1,15 +1,15 @@
-package com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service;
+// package com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service;
 
-//H
+// //H
 
-import java.io.Serializable;
+// import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+// import lombok.AllArgsConstructor;
+// import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-public class IndexingMessage implements Serializable {
-    String action;
-    String body;
-}
+// @AllArgsConstructor
+// @NoArgsConstructor
+// public class IndexingMessage implements Serializable {
+//     String action;
+//     String body;
+// }
