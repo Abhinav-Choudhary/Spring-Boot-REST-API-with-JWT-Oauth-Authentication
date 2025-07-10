@@ -38,7 +38,7 @@ import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Validator.JSONValidato
 import javax.validation.Valid;
 // import org.apache.commons.codec.binary.Base64;
 
-// import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.AuthService;
+import com.northeastern.INFO7255.INFO7255AbhinavChoudhary.Service.AuthService;
 
 @RestController
 @RequestMapping("/v1")
@@ -58,8 +58,8 @@ public class PlanController {
     // @Autowired
     // RabbitTemplate template;
 
-    // @Autowired
-    // AuthService auth;
+    @Autowired
+    AuthService auth;
 
     // Map<String, Object> map = new HashMap<String, Object>();
     // String publicKey = "";
@@ -98,11 +98,11 @@ public class PlanController {
         //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", validateToken).toString());
         // }
 
-        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        // System.out.println("Token:"+authToken);
-        // if(!auth.verify(authToken)) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        // }
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        System.out.println("Token:"+authToken);
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
         
         // map.clear();
 
@@ -139,10 +139,10 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
-        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        // if(!auth.verify(authToken)) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        // }
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
         
         if (!planService.checkIfKeyExists(type + ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -175,10 +175,10 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
-        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        // if(!auth.verify(authToken)) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        // }
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
         
         if (!planService.checkIfKeyExists("plan"+ ":" + objectId + ":")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -212,10 +212,10 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
-        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        // if(!auth.verify(authToken)) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        // }
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
 
         JSONObject planObject = new JSONObject(medicalPlan);
         try {
@@ -262,10 +262,10 @@ public class PlanController {
         // if(!validateToken.equals("tokenValid")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         // .body(new JSONObject().put("Authentication Error", validateToken).toString());
 
-        // String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
-        // if(!auth.verify(authToken)) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
-        // }
+        String authToken = (headers.getFirst("Authorization") != null) ? headers.getFirst("Authorization").split(" ")[1] : "";
+        if(!auth.verify(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JSONObject().put("Authentication Error", authToken).toString());
+        }
 
         JSONObject planObject = new JSONObject(medicalPlan);
 
